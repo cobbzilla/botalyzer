@@ -9,6 +9,7 @@ __maintainer__ = "Jonathan Cobb"
 __email__ = "jonathan@kyuss.org"
 __status__ = "Development"
 
+import base64
 import json
 import os
 import sys
@@ -34,6 +35,8 @@ class RobotsTxt:
     def __init__(self, robots_txt_file):
         self.subdomain = os.path.basename(os.path.dirname(robots_txt_file))
         self.paths = {}
+        with open(robots_txt_file, 'r') as file:
+            self.base64 = base64.b64encode(file.read().encode('UTF-8')).decode('UTF-8')
 
         user_agent = None
         with open(robots_txt_file) as robots_txt:
@@ -83,8 +86,8 @@ class RobotsSummary:
         # list of all subdomains discovered
         self.subdomains = []
 
-        # list of all subdomains with robots.txt
-        self.subdomains_with_robots = []
+        # list of all subdomains with robots.txt, and their robots.txt file, base64-encoded
+        self.subdomains_with_robots = {}
 
         # list of subdomains that block all bots
         self.fully_blocked_subdomains = []
@@ -99,30 +102,31 @@ class RobotsSummary:
         self.fully_blocked_paths = {}
 
         for robots_txt in robots:
-            self.subdomains.append(robots_txt.subdomain)
+            subdomain = robots_txt.subdomain
+            self.subdomains.append(subdomain)
             is_valid_robots_file = False
             for user_agent, paths in robots_txt.paths.items():
                 is_valid_robots_file = True
                 if user_agent == WILDCARD_USER_AGENT:
                     if len(paths) == 1 and paths[0] == '/':
-                        self.fully_blocked_subdomains.append(robots_txt.subdomain)
+                        self.fully_blocked_subdomains.append(subdomain)
                     else:
                         for path in paths:
                             if path not in self.fully_blocked_paths:
                                 self.fully_blocked_paths[path] = []
-                            self.fully_blocked_paths[path].append(robots_txt.subdomain)
+                            self.fully_blocked_paths[path].append(subdomain)
 
                 elif len(paths) == 1 and paths[0] == '/':
                     if user_agent not in self.fully_blocked_bots:
                         self.fully_blocked_bots[user_agent] = []
-                    self.fully_blocked_bots[user_agent].append(robots_txt.subdomain)
+                    self.fully_blocked_bots[user_agent].append(subdomain)
 
                 else:
                     if user_agent not in self.partially_blocked_bots:
                         self.partially_blocked_bots[user_agent] = []
-                    self.partially_blocked_bots[user_agent].append(robots_txt.subdomain)
+                    self.partially_blocked_bots[user_agent].append(subdomain)
             if is_valid_robots_file:
-                self.subdomains_with_robots.append(robots_txt.subdomain)
+                self.subdomains_with_robots[subdomain] = robots_txt.base64
 
 
 def main():
