@@ -14,6 +14,14 @@ app.get('/*', (req: Request, res: Response) => {
     const url: string = req.url || '/'
     const domain : string = url.substring(1).trim()
 
+    // a request for our own robots.txt file, not a domain analysis
+    if (domain === 'robots.txt') {
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'text/plain')
+        res.end('User-agent: *\nDisallow: /\n')
+        return
+    }
+
     // ensure domain only contains letters, numbers, dots and hyphens, in the correct pattern
     // this is important because this string gets passed as an argument to a shell script
     // and thus is obvious place for an injection attack
@@ -29,12 +37,12 @@ app.get('/*', (req: Request, res: Response) => {
 
     let result: string = ''
     analysis.stdout.on('data', (data: string) => {
-        // console.log(`stdout: ${data}`);
+        console.log(`stdout >>>>>> ${data}`);
         result = result + data
     });
 
     analysis.stderr.on('data', (data: string) => {
-        // console.error(`stderr: ${data}`);
+        console.error(`stderr >>>>>> ${data}`);
     });
 
     analysis.on('close', (code: number) => {
