@@ -1,0 +1,13 @@
+User-agent: BadBot
+Disallow: /
+
+User-agent: ScamBot
+Disallow: /
+
+User-agent: GoogleBot
+Disallow: /blogs
+
+User-agent: *
+Disallow: /cgi-bin/
+Disallow: /tmp/
+Disallow: /~
