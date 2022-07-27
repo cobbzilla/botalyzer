@@ -44,6 +44,10 @@ fetch_curl () {
 fetch_robots () {
   SUBDOMAIN="${1:?no subdomain provided}"
   OUTFILE="${DOMAIN_RESULTS_DIR}/${SUBDOMAIN}/robots.txt"
+  if [ -f "${OUTFILE}" ] ; then
+    echo 1>&2 "Using cached robots.txt for ${SUBDOMAIN}"
+    return
+  fi
   mkdir -p "$(dirname "${OUTFILE}")"
 
   echo 1>&2 "Fetching robots.txt for ${SUBDOMAIN} over https"
