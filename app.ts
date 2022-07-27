@@ -22,6 +22,13 @@ app.get('/*', (req: Request, res: Response) => {
         return
     }
 
+    // a request for our own favicon.ico file, not a domain analysis
+    if (domain === 'favicon.ico') {
+        res.statusCode = 404
+        res.end('Not Found\n')
+        return
+    }
+
     // ensure domain only contains letters, numbers, dots and hyphens, in the correct pattern
     // this is important because this string gets passed as an argument to a shell script
     // and thus is obvious place for an injection attack
