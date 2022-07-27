@@ -66,6 +66,7 @@ fi
 
 # Fetch robots.txt for each subdomain
 DOMAIN_RESULTS_DIR="${SUBDOMAIN_CACHE}/${DOMAIN}.robots"
+mkdir -p "${DOMAIN_RESULTS_DIR}"
 while read -r subdomain ; do
   if [ -n "${subdomain}" ] ; then
     fetch_robots "${subdomain}"
