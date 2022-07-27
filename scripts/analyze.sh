@@ -19,10 +19,13 @@ DOMAIN=${1:?no domain provided}
 SUBDOMAIN_CACHE="${2:-/tmp/"$(basename "${0}").cache"}"
 mkdir -p "${SUBDOMAIN_CACHE}"
 
+CURL_VERBOSE="--silent"
+# CURL_VERBOSE="-v"
+
 fetch_curl () {
   URL="${1:?no URL provided}"
   OUTFILE="${2:?no output file provided}"
-  curl "${URL}" --silent --insecure --compressed \
+  curl "${URL}" "${CURL_VERBOSE}" --connect-timeout 5 --max-time 10 --insecure --compressed \
     -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0' \
     -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8' \
     -H 'Accept-Language: en-US,en;q=0.5' \
