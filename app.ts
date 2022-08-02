@@ -39,6 +39,7 @@ app.get('/*', (req: Request, res: Response) => {
     }
 
     // domain arg has been scrubbed above
+    console.log(` @@@@@ running analysis for ${domain} ...`)
     const analysis: ChildProcessByStdio<Writable, Readable, Readable>
       = spawn('scripts/analyze.sh', [domain]);
 
