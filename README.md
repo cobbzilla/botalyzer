@@ -3,7 +3,7 @@ Robots Analyzer
 
 Given a domain name, this tool will:
  * Discover subdomains
- * Look a robots.txt file on each subdomain
+ * Look for a robots.txt file on each subdomain
  * Generate some analytics on the contents of the robots.txt files
 
 # Setup
